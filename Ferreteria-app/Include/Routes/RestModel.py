@@ -1,4 +1,6 @@
-from Include.UI.Producto import UIProducto, UIProveedor, UICliente
+from Include.UI.Producto import UIProducto
+from Include.UI.Proveedor import UIProveedor
+from Include.UI.Cliente import UICliente
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
@@ -333,7 +335,7 @@ def addCliente():
         return response
 
 @app.route('/deleteCliente', methods=['DELETE'])
-def EliminarProveedor():
+def EliminarCliente():
     try:
         id = request.args['dni']
         c = UICliente()
@@ -417,8 +419,8 @@ def ObtenerCliente():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/getProveedores')
-def ObtenerProveedores():
+@app.route('/getClientes')
+def ObtenerClientes():
     try:
         c = UICliente()
         listaClientes = c.ObtenerClientes()
@@ -441,7 +443,7 @@ def ObtenerProveedores():
         })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
-    
+
 #If we're running in  stand alone mode,run the application
 if __name__ == '__main__':
     app.run(debug=True)
