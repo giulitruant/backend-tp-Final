@@ -1,4 +1,4 @@
-from Include.UI.Producto import UIProducto, UIProveedor
+from Include.UI.Producto import UIProducto, UIProveedor, UICliente
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
@@ -238,7 +238,6 @@ def ActualizarProveedor():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-
 @app.route('/getProveedor')
 def ObtenerProveedor():
     try:
@@ -304,6 +303,145 @@ def ObtenerProveedores():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
+@app.route('/addCliente', methods=['POST'])
+def addCliente():
+    try:
+        dni = request.json['dni']
+        nombre = request.json['nombre']
+        apellido = request.json['apellido']
+        tel = request.json['telefono']
+        email = request.json['email']
+        direccion = request.json['direccion']
+        c = UICliente()
+        rta = p.Alta(dni, nombre, apellido, tel, email, direccion)
+        if rta == 'ok':
+            response = jsonify({
+                "msj" : rta
+            })
+        else:
+            response = jsonify({
+                "msj" : rta
+            })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+    except Exception as e:
+        response = jsonify({
+            'msj': 'Error de servicio'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+@app.route('/deleteCliente', methods=['DELETE'])
+def EliminarProveedor():
+    try:
+        id = request.args['dni']
+        c = UICliente()
+        rta = c.Baja(id)
+
+        if rta == 'ok':
+            response = jsonify({
+                'msj' : rta
+            })
+        else:
+            response = jsonify({
+                'msj': rta
+            })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+    except Exception as e:
+        response = jsonify({
+            'msj':'Error de servicio'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+@app.route('/updateCliente', methods=['PUT'])
+def ActualizarCliente():
+    try:
+        dni = request.args['dni']
+        nombre = request.args['nombre']
+        apellido = request.args['apellido']
+        tel = request.args['tel']
+        email = request.args['email']
+        dire = request.args['direccion']
+
+        c = UICliente()
+        rta = c.modificar(dni, nombre, apellido, tel, email, dire)
+
+        if rta == 'ok':
+            response = jsonify({
+                'msj': rta
+            })
+        else:
+            response = jsonify({
+                'msj': rta
+            })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+    except Exception as e:
+        response = jsonify({
+            'msj': 'Error de servicio'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+@app.route('/getCliente')
+def ObtenerCliente():
+    try:
+        dni = request.args['dni']
+        c = UICliente()
+        obj = c.BuscarProveedor(dni)
+        if not obj.dni is None:
+            response = jsonify({
+                'dni': obj.dni,
+                'nombre': obj.nombre,
+                'apellido': obj.apellido,
+                'telefono':obj.tel,
+                'email':obj.email,
+                'direccion':obj.direccion
+            })
+        else:
+            response = jsonify({
+                'msj':obj
+            })
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response
+
+    except Exception as e:
+        response = jsonify({
+            'msj': 'Error de servicio'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+@app.route('/getProveedores')
+def ObtenerProveedores():
+    try:
+        c = UICliente()
+        listaClientes = c.ObtenerClientes()
+        response = jsonify({
+            "proveedor": [{"cuit": x.dni,
+                          "nombre": x.nombre,
+                          "apellido": x.apellido,
+                          "telefono": x.tel,
+                          "email": x.email,
+                          "direccion": x.direccion
+                          } for x in listaClientes],
+            'msj': ''
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+    except Exception as e:
+        response = jsonify({
+            'msj':'Error de servicio'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+    
 #If we're running in  stand alone mode,run the application
 if __name__ == '__main__':
     app.run(debug=True)
