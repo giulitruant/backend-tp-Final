@@ -1,154 +1,129 @@
-# SQL Manager 2005 Lite for MySQL 3.7.0.1
-# ---------------------------------------
-# Host     : localhost
-# Port     : 3306
-# Database : afatse
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+CREATE SCHEMA IF NOT EXISTS `bdferreteria` DEFAULT CHARACTER SET utf8 ;
+USE `bdferreteria` ;
+
+-- -----------------------------------------------------
+-- Table `bdferreteria`.`cliente`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `bdferreteria`.`cliente` (
+  `dni` INT(11) NOT NULL ,
+  `nombre` VARCHAR(20) NOT NULL ,
+  `apellido` VARCHAR(20) NOT NULL ,
+  `tel` VARCHAR(20) NULL DEFAULT NULL ,
+  `email` VARCHAR(50) NULL DEFAULT NULL ,
+  `direccion` VARCHAR(50) NULL DEFAULT NULL ,
+  PRIMARY KEY (`dni`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
-SET FOREIGN_KEY_CHECKS=0;
-
-DROP DATABASE IF EXISTS `BDFerreteria`;
-
-CREATE DATABASE `BDFerreteria`
-    CHARACTER SET 'utf8'
-    COLLATE 'utf8_general_ci';
-
-USE `BDFerreteria`;
-
-#
-# Structure for the `alumnos` table :
-#
-
-DROP TABLE IF EXISTS `cliente`;
-
-CREATE TABLE `cliente` (
-  `dni` int(11) NOT NULL,
-  `nombre` varchar(20) NOT NULL,
-  `apellido` varchar(20) NOT NULL,
-  `tel` varchar(20) default NULL,
-  `email` varchar(50) default NULL,
-  `direccion` varchar(50) default NULL,
-  PRIMARY KEY  (`dni`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-#
-# Structure for the `plan_capacitacion` table :
-#
-
-DROP TABLE IF EXISTS `proveedor`;
-
-CREATE TABLE `proveedor` (
-  `cuit` char(20) NOT NULL ,
-  `nombre` varchar(20) NOT NULL,
-  `apellido` varchar(20) NOT NULL,
-  `tel` varchar(20) default NULL,
-  `email` varchar(50) default NULL,
-  `direccion` varchar(50) default NULL,
-  PRIMARY KEY  (`cuit`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-#
-# Structure for the `personas` table : 
-#
-
-DROP TABLE IF EXISTS `producto`;
-
-CREATE TABLE `producto` (
-  `id_prod` int(11) NOT NULL,
-  `descripcion` varchar(20) NOT NULL,
-  `precio_uni` float NOT NULL,
-  `cant_stock` int(11) default NULL,
-  `cant_min` int(11) default NULL,
-  `cuit` char(20) NOT NULL ,
-  PRIMARY KEY  (`id_prod`),
-  KEY `cuit` (`cuit`),
-  CONSTRAINT `producto_fk` FOREIGN KEY (`cuit`) REFERENCES `proveedor` (`cuit`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-#
-# Structure for the `cuotas` table :
-#
-
-DROP TABLE IF EXISTS `remito`;
-
-CREATE TABLE `remito` (
-	`nro_remito` int(11) NOT NULL AUTO_INCREMENT,
-	`nombre` varchar(50) NOT NULL,
-	`apellido` varchar(50) NOT NULL,
-	`telefono` varchar(20) default NULL,
-	`direccion` varchar(50) default NULL,
-    `id_prod` int(11) NOT NULL,
-  PRIMARY KEY  (`nro_remito`),
-  KEY `id_prod` (`id_prod`),
-  CONSTRAINT `remito_fk` FOREIGN KEY (`id_prod`) REFERENCES `producto` (`id_prod`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-#
-# Structure for the `inscripciones` table :
-#
-
-DROP TABLE IF EXISTS `factura`;
-
-CREATE TABLE `factura` (
-  `id_factura` int(11) NOT NULL AUTO_INCREMENT,
-  `total` float NOT NULL,
-  `tipo` varchar(10) NOT NULL,
-  `nom_tarjeta` varchar(50) NOT NULL,
-  `cuenta` varchar(50) NOT NULL,
-  `num_tarjeta` varchar(50) NOT NULL,
-  `cant_cuotas` int(11) NOT NULL,
-  `id_prod` int(11) NOT NULL,
-  KEY `id_prod` (`id_prod`),
-  PRIMARY KEY  (`id_factura`),  
-  CONSTRAINT `factura_prod_fk` FOREIGN KEY (`id_prod`) REFERENCES `Producto` (`id_prod`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-#
-# Structure for the `cursos_horarios` table :
-#
-
-DROP TABLE IF EXISTS `solicitud`;
-
-CREATE TABLE `solicitud` (
-	`nro_solicitud` int(11) NOT NULL AUTO_INCREMENT,
-  `id_prod` int(11) NOT NULL,
-  `cant_pedida` varchar(50) default NULL,
-  `nro_remito` int(11) NOT NULL,
-  PRIMARY KEY  (`nro_solicitud`),
-  KEY `id_prod` (`id_prod`),
-  KEY `nro_remito` (`nro_remito`),
-  CONSTRAINT `solicitud_prod_fk` FOREIGN KEY (`id_prod`) REFERENCES `Producto` (`id_prod`) ON UPDATE CASCADE,
-  CONSTRAINT `solicitud_rem_fk` FOREIGN KEY (`nro_remito`) REFERENCES `Remito` (`nro_remito`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `bdferreteria`.`proveedor`
-(`cuit`,
-`nombre`,
-`apellido`,
-`tel`,
-`email`,
-`direccion`)
-VALUES
-('11123654783',
-'pepito',
-'gonzales',
-'112233',
-'pgonzales@gmail.com',
-'mariquita sanchez 61');
+-- -----------------------------------------------------
+-- Table `bdferreteria`.`solicitud`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `bdferreteria`.`solicitud` (
+  `nro_solicitud` INT(11) NOT NULL AUTO_INCREMENT ,
+  `dni_cliente` INT(11) NOT NULL ,
+  `precio_total` FLOAT NULL ,
+  `fecha_solicitud` DATETIME NOT NULL ,
+  PRIMARY KEY (`nro_solicitud`) ,
+  INDEX `fk_solicitud_cliente1_idx` (`dni_cliente` ASC) ,
+  CONSTRAINT `fk_solicitud_cliente1`
+    FOREIGN KEY (`dni_cliente` )
+    REFERENCES `bdferreteria`.`cliente` (`dni` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
-INSERT INTO `bdferreteria`.`producto`
-(`id_prod`,
-`descripcion`,
-`precio_uni`,
-`cant_stock`,
-`cant_min`,
-`cuit`)
-VALUES
-(
-1,
-'tornillos 15mm',
-1.5,
-500000,
-5000,
-'11123654783');
+-- -----------------------------------------------------
+-- Table `bdferreteria`.`factura`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `bdferreteria`.`factura` (
+  `id_factura` INT(11) NOT NULL AUTO_INCREMENT ,
+  `total` FLOAT NOT NULL ,
+  `tipo` VARCHAR(10) NOT NULL ,
+  `forma_pago` VARCHAR(45) NOT NULL ,
+  `nom_tarjeta` VARCHAR(50) NULL ,
+  `cuenta` VARCHAR(50) NULL ,
+  `num_tarjeta` VARCHAR(50) NULL ,
+  `cant_cuotas` INT(11) NULL ,
+  `nro_solicitud` INT(11) NULL ,
+  PRIMARY KEY (`id_factura`) ,
+  INDEX `fk_factura_solicitud1_idx` (`nro_solicitud` ASC) ,
+  CONSTRAINT `fk_factura_solicitud1`
+    FOREIGN KEY (`nro_solicitud` )
+    REFERENCES `bdferreteria`.`solicitud` (`nro_solicitud` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `bdferreteria`.`proveedor`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `bdferreteria`.`proveedor` (
+  `cuit` CHAR(20) NOT NULL ,
+  `nombre` VARCHAR(20) NOT NULL ,
+  `apellido` VARCHAR(20) NOT NULL ,
+  `tel` VARCHAR(20) NULL DEFAULT NULL ,
+  `email` VARCHAR(50) NULL DEFAULT NULL ,
+  `direccion` VARCHAR(50) NULL DEFAULT NULL ,
+  PRIMARY KEY (`cuit`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `bdferreteria`.`producto`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `bdferreteria`.`producto` (
+  `id_prod` INT(11) NOT NULL AUTO_INCREMENT,
+  `descripcion` VARCHAR(20) NOT NULL ,
+  `precio_uni` FLOAT NOT NULL ,
+  `cant_stock` INT(11) NULL DEFAULT NULL ,
+  `cant_min` INT(11) NULL DEFAULT NULL ,
+  `cuit` CHAR(20) NOT NULL ,
+  PRIMARY KEY (`id_prod`) ,
+  INDEX `cuit` (`cuit` ASC) ,
+  CONSTRAINT `producto_fk`
+    FOREIGN KEY (`cuit` )
+    REFERENCES `bdferreteria`.`proveedor` (`cuit` )
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `bdferreteria`.`solicitud_detalle`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `bdferreteria`.`solicitud_detalle` (
+  `id_detalle` INT NOT NULL AUTO_INCREMENT ,
+  `nro_solicitud` INT(11) NOT NULL ,
+  `cantidad` FLOAT NULL ,
+  `id_prod` INT(11) NOT NULL ,
+  PRIMARY KEY (`id_detalle`, `nro_solicitud`) ,
+  INDEX `fk_Solicitud_Detalle_solicitud1_idx` (`nro_solicitud` ASC) ,
+  INDEX `fk_Solicitud_Detalle_producto1_idx` (`id_prod` ASC) ,
+  CONSTRAINT `fk_Solicitud_Detalle_solicitud1`
+    FOREIGN KEY (`nro_solicitud` )
+    REFERENCES `bdferreteria`.`solicitud` (`nro_solicitud` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Solicitud_Detalle_producto1`
+    FOREIGN KEY (`id_prod` )
+    REFERENCES `bdferreteria`.`producto` (`id_prod` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+USE `bdferreteria` ;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
