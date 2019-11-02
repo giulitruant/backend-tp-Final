@@ -1,7 +1,7 @@
 from Include.UI.Producto import UIProducto
 from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 
 #Create the application instance
@@ -158,6 +158,9 @@ def ActualizarProducto():
 @app.route('/addProveedor', methods=['POST'])
 def addProveedor():
     try:
+        file = json.loads(request.data)
+        js = request.get_json()
+        jso = jsonify(js)
         cuit = request.json['cuit']
         nombre = request.json['nombre']
         apellido = request.json['apellido']
@@ -168,7 +171,7 @@ def addProveedor():
         rta = p.Alta(cuit, nombre, apellido, tel, email, direccion)
         if rta == 'ok':
             response = jsonify({
-                "msj" : rta
+                "msj": rta
             })
         else:
             response = jsonify({
