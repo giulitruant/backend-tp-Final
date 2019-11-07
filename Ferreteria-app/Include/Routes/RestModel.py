@@ -74,10 +74,10 @@ def ObtenerProductosPorProveedor():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/deleteProducto', methods=['DELETE'])
-def EliminarProducto():
+@app.route('/deleteProducto/<string:id>', methods=['DELETE'])
+def EliminarProductoid(id):
     try:
-        id = int(request.args['id_producto'])
+        id = id #int(request.args['id_producto'])
         p = UIProducto()
         msj = p.deleteProducto(id)
 
@@ -337,10 +337,10 @@ def addCliente():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/deleteCliente', methods=['DELETE'])
-def EliminarCliente():
+@app.route('/deleteCliente/<string:id>', methods=['DELETE'])
+def EliminarCliente(id):
     try:
-        id = request.args['dni']
+        id = id #request.args['dni']
         c = UICliente()
         rta = c.Baja(id)
 
