@@ -175,7 +175,7 @@ def addProveedor():
             })
         else:
             response = jsonify({
-                "msj" : rta
+                "msj": rta
             })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
@@ -187,10 +187,10 @@ def addProveedor():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/deleteProveedor', methods=['DELETE'])
-def EliminarProveedor():
+@app.route('/deleteProveedor/<string:cuit>', methods=['DELETE'])
+def EliminarProveedor(cuit):
     try:
-        id = request.args['cuit']
+        id = cuit #request.args['cuit']
         p = UIProveedor()
         rta = p.Baja(id)
 
