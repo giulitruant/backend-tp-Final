@@ -314,11 +314,11 @@ def addCliente():
         dni = request.json['dni']
         nombre = request.json['nombre']
         apellido = request.json['apellido']
-        tel = request.json['telefono']
+        tel = request.json['tel']
         email = request.json['email']
         direccion = request.json['direccion']
         c = UICliente()
-        rta = p.Alta(dni, nombre, apellido, tel, email, direccion)
+        rta = c.Alta(dni, nombre, apellido, tel, email, direccion)
         if rta == 'ok':
             response = jsonify({
                 "msj" : rta
@@ -428,10 +428,10 @@ def ObtenerClientes():
         c = UICliente()
         listaClientes = c.ObtenerClientes()
         response = jsonify({
-            "proveedor": [{"cuit": x.dni,
+            "cliente": [{"dni": x.dni,
                           "nombre": x.nombre,
                           "apellido": x.apellido,
-                          "telefono": x.tel,
+                          "tel": x.tel,
                           "email": x.email,
                           "direccion": x.direccion
                           } for x in listaClientes],

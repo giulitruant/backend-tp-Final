@@ -21,6 +21,7 @@ class UICliente():
 
     def Baja(self, dni):
         try:
+            dni = int(dni)
             c = Cliente.query.filter_by(dni=dni).first()
             if not c is None:
                 db.session.delete(c)
