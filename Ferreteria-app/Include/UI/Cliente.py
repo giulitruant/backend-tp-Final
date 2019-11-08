@@ -8,7 +8,7 @@ class UICliente():
         try:
             if not dni is None and not nom is None and not ape is None and not tel is None and not email is None:
                 c = Cliente(dni=dni, nombre=nom, apellido=ape, tel=tel, email=email, direccion=direccion)
-                existe = Proveedor.query.filter_by(dni=dni).first()
+                existe = Cliente.query.filter_by(dni=dni).first()
                 if not c is None:
                     db.session.add(c)
                     db.session.commit()
@@ -19,9 +19,10 @@ class UICliente():
         except TypeError as e:
             return 'Error de servicio'
 
-    def Baja(self, cuit):
+    def Baja(self, dni):
         try:
-            c = Proveedor.query.filter_by(dni=dni).first()
+            dni = int(dni)
+            c = Cliente.query.filter_by(dni=dni).first()
             if not c is None:
                 db.session.delete(c)
                 db.session.commit()
@@ -36,15 +37,15 @@ class UICliente():
             cli = Cliente()
             cli = Cliente.query.filter_by(dni=dni).first()
             if nom != '' and not nom is None:
-                prov.nombre = nom
+                cli.nombre = nom
             if ape != '' and not ape is None:
-                prov.apellido = ape
+                cli.apellido = ape
             if tel != '' and not tel is None:
-                prov.tel = tel
+                cli.tel = tel
             if email != '' and not email is None:
-                prov.email = email
+                cli.email = email
             if direccion != '':
-                prov.direccion = direccion
+                cli.direccion = direccion
 
             db.session.commit()
             return 'ok'

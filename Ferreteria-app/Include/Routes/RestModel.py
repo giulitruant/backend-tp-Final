@@ -1,9 +1,7 @@
 from Include.UI.Producto import UIProducto
 from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
-from Include.UI.Solicitud import UISolicitud
-from Include.UI.Solicitud_Detalle import UISolicitudDetalle
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 
 #Create the application instance
@@ -76,10 +74,10 @@ def ObtenerProductosPorProveedor():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/deleteProducto', methods=['DELETE'])
-def EliminarProducto():
+@app.route('/deleteProducto/<string:id>', methods=['DELETE'])
+def EliminarProductoid(id):
     try:
-        id = int(request.args['id_producto'])
+        id = id #int(request.args['id_producto'])
         p = UIProducto()
         msj = p.deleteProducto(id)
 
@@ -160,6 +158,9 @@ def ActualizarProducto():
 @app.route('/addProveedor', methods=['POST'])
 def addProveedor():
     try:
+        file = json.loads(request.data)
+        js = request.get_json()
+        jso = jsonify(js)
         cuit = request.json['cuit']
         nombre = request.json['nombre']
         apellido = request.json['apellido']
@@ -170,11 +171,11 @@ def addProveedor():
         rta = p.Alta(cuit, nombre, apellido, tel, email, direccion)
         if rta == 'ok':
             response = jsonify({
-                "msj" : rta
+                "msj": rta
             })
         else:
             response = jsonify({
-                "msj" : rta
+                "msj": rta
             })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
@@ -186,10 +187,10 @@ def addProveedor():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/deleteProveedor', methods=['DELETE'])
-def EliminarProveedor():
+@app.route('/deleteProveedor/<string:cuit>', methods=['DELETE'])
+def EliminarProveedor(cuit):
     try:
-        id = request.args['cuit']
+        id = cuit #request.args['cuit']
         p = UIProveedor()
         rta = p.Baja(id)
 
@@ -313,7 +314,7 @@ def addCliente():
         dni = request.json['dni']
         nombre = request.json['nombre']
         apellido = request.json['apellido']
-        tel = request.json['telefono']
+        tel = request.json['tel']
         email = request.json['email']
         direccion = request.json['direccion']
         c = UICliente()
@@ -336,10 +337,10 @@ def addCliente():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-@app.route('/deleteCliente', methods=['DELETE'])
-def EliminarCliente():
+@app.route('/deleteCliente/<string:id>', methods=['DELETE'])
+def EliminarCliente(id):
     try:
-        id = request.args['dni']
+        id = id #request.args['dni']
         c = UICliente()
         rta = c.Baja(id)
 
@@ -427,10 +428,10 @@ def ObtenerClientes():
         c = UICliente()
         listaClientes = c.ObtenerClientes()
         response = jsonify({
-            "proveedor": [{"cuit": x.dni,
+            "cliente": [{"dni": x.dni,
                           "nombre": x.nombre,
                           "apellido": x.apellido,
-                          "telefono": x.tel,
+                          "tel": x.tel,
                           "email": x.email,
                           "direccion": x.direccion
                           } for x in listaClientes],
