@@ -75,3 +75,14 @@ class UIProducto():
             print(e.args)
             return None
 
+    def buscarProducto(self,id):
+        try:
+            p = Producto.query.filter_by(id_prod = id).first()
+            if p:
+                return p
+            else:
+                return 'Producto inexistente'
+        except ValueError as ex:
+            print (ex.args)
+            return None 
+

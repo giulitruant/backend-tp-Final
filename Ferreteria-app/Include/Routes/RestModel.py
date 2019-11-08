@@ -1,6 +1,8 @@
 from Include.UI.Producto import UIProducto
 from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
+from Include.UI.Solicitud import UISolicitud
+from Include.UI.Solicitud_Detalle import UISolicitudDetalle
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
@@ -315,7 +317,7 @@ def addCliente():
         email = request.json['email']
         direccion = request.json['direccion']
         c = UICliente()
-        rta = p.Alta(dni, nombre, apellido, tel, email, direccion)
+        rta = c.Alta(dni, nombre, apellido, tel, email, direccion)
         if rta == 'ok':
             response = jsonify({
                 "msj" : rta
@@ -444,6 +446,33 @@ def ObtenerClientes():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
+@app.route('/addSolicitud' , methods=['POST'])
+def addSolicitud():
+    try:
+        dni = request.args['dni_cliente']
+        precio = request.args['precio_total']
+        fecha_sol = request.args['fecha_solicitud']
+        #Agregar fecha_vto_solicitud
+        sol_details = request.args['solicitud']
+        s = UISolicitud()
+        sol = s.Alta(dni = dni, precio = precio,fecha = fecha_sol)
+        if sol:
+            for det in sol_details:
+                sd = UISolicitudDetalle()
+                rta_detalle = sd.Alta(sol.nro_solicitud,det.cantidad,det.prod)
+        #response = jsonify({
+                #'msj': 
+            #})
+
+#hacer un get solicitud devolviendo un json con los datos de la solicitud y el cliente
+
+
+
+            
+
+
+
+    
 #If we're running in  stand alone mode,run the application
 if __name__ == '__main__':
     app.run(debug=True)
