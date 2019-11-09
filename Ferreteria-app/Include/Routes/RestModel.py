@@ -74,6 +74,7 @@ def ObtenerProductosPorProveedor():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
+#sin uso por el momento
 @app.route('/getProductos', methods=['GET'])
 def ObtenerProductos():
     try:

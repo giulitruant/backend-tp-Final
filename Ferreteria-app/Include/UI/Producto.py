@@ -32,13 +32,16 @@ class UIProducto():
 
     def getProductos(self, cuit):
         try:
+
             if not cuit is None and cuit != '':
+                # Si tengo el cuit devuelvo solamente los productos del proveedor
                 listaProductos = Producto.query.filter_by(cuit=cuit).all()
                 if listaProductos.__len__() > 0:
                     return listaProductos
                 else:
                     'No tiene productos cargados'
             else:
+                # Si no viene cuit es porque tengo que devolver todos los productos
                 listaProductos = Producto.query.filter_by().all()
                 if listaProductos.__len__() > 0:
                     return listaProductos
