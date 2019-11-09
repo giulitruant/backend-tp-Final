@@ -74,6 +74,44 @@ def ObtenerProductosPorProveedor():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
+@app.route('/getProductos', methods=['GET'])
+def ObtenerProductos():
+    try:
+        #prov = str(request.args['proveedor'])
+        #if len(prov) == 11:
+        np = UIProducto()
+        lista = np.getProductos()
+        response = jsonify({
+            "producto": [{"id": x.id_prod,
+                          "descripcion": x.descripcion,
+                          "precioUnitario" : x.precio_uni,
+                          "stock" : x.cant_stock,
+                        "cantidad_minima_stock": x.cant_min,
+                        "proveedor": x.cuit
+                        } for x in lista],
+            'msj':''
+            })
+        #else:
+         #   response = jsonify({
+          #      'msj': 'El cuit debe contener 11 numeros'
+           # })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+    except ValueError as ve:
+        response = jsonify({
+            'msj': 'El campo no es correcto'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+    except Exception as e:
+        print(e.args)
+        response = jsonify({
+                'msj':'Error al objetener el producto'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
 @app.route('/deleteProducto/<string:id>', methods=['DELETE'])
 def EliminarProductoid(id):
     try:

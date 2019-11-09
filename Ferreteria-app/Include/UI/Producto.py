@@ -32,11 +32,18 @@ class UIProducto():
 
     def getProductos(self, cuit):
         try:
-            listaProductos = Producto.query.filter_by(cuit=cuit).all()
-            if listaProductos.__len__() > 0:
-                return listaProductos
+            if not cuit is None and cuit != '':
+                listaProductos = Producto.query.filter_by(cuit=cuit).all()
+                if listaProductos.__len__() > 0:
+                    return listaProductos
+                else:
+                    'No tiene productos cargados'
             else:
-                'No tiene productos cargados'
+                listaProductos = Producto.query.filter_by().all()
+                if listaProductos.__len__() > 0:
+                    return listaProductos
+                else:
+                    'No tiene productos cargados'
 
         except ValueError as e:
             return 'Hubo un error al recuperar la lista de productos'
