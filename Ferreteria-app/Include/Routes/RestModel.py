@@ -486,6 +486,10 @@ def ObtenerClientes():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
+@app.route('/add-Compra', methods=['POST'])
+def addCompra():
+    solicitudCompra = request.json['nroSolicitud']
+
 #If we're running in  stand alone mode,run the application
 if __name__ == '__main__':
     app.run(debug=True)

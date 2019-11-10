@@ -2,8 +2,6 @@ from Include.Model.model import Producto
 from Include.UI.Proveedor import UIProveedor
 from Include.Model.model import db
 
-
-
 class UIProducto():
 
     def alta(self, desc, prec_u, stock, cantM, prov):
