@@ -4,7 +4,7 @@ from Include.Model.model import db
 
 class UIFactura():
 
-    def alta(self, nroSolicitud, formaPago, nomTarjeta, cuenta, num_tarjeta, cant_cuotas, tipo):
+    def alta(self, nroSolicitud, formaPago,  tipo, cuenta = '', nomTarjeta = '', num_tarjeta = '', cant_cuotas = ''):
         try:
             fact = Factura()
             fact.tipo = tipo
@@ -31,7 +31,7 @@ class UIFactura():
             db.session.add(fact)
             db.session.commit()
 
-
+            return fact
 
         except ValueError:
             return 'Hubo un error al agregar el producto'

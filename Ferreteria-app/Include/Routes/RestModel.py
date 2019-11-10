@@ -1,6 +1,12 @@
 from Include.UI.Producto import UIProducto
 from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
+from Include.UI.Factura import UIFactura
+from datetime import date
+# a Borrar
+from Include.Model.model import Solicitud, Solicitud_Detalle, Cliente
+from Include.Model.model import db
+
 from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 
@@ -488,7 +494,41 @@ def ObtenerClientes():
 
 @app.route('/add-Compra', methods=['POST'])
 def addCompra():
-    solicitudCompra = request.json['nroSolicitud']
+    try:
+        nroSolicitudCompra = request.json['nroSolicitud']
+        solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        cliente = Cliente.query.filter_by(dni=solic.dni_cliente)
+        detSolic = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        tipo = request.json['tipo']
+        cuenta = request.json['cuenta']
+        formaPago = request.json['formaPago']
+        if formaPago == 'tarjeta':
+            nomTarjeta = request.json['nomTarjeta']
+            num_tarjeta = request.json['num_tarjeta']
+            cant_cuotas = request.json['cant_cuotas']
+            factura = UIFactura.alta(nroSolicitudCompra, formaPago, nomTarjeta, num_tarjeta, cuenta, cant_cuotas, tipo)
+        else:
+            factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
+
+
+    except Exception as ex:
+        print(ex)
+        jsonify({
+            'nroFactura': factura.id,
+            'fecha': date.today(),
+            'tipoFactura': factura.tipo,
+            'razonSocial': cliente.nombre + cliente.apellido,
+            'Domicilio': cliente.direccion,
+            'telefono': cliente.tel,
+            'dni': cliente.dni,
+            "producto": [{"cant": x.cantidad,
+                          "Descripcion": x.nombre,
+                          "apellido": x.apellido,
+                          "precioU": x.tel,
+                          "importe": x.email,
+                          } for x in detSolic],
+            'importeTotal': factura.total
+        })
 
 #If we're running in  stand alone mode,run the application
 if __name__ == '__main__':
