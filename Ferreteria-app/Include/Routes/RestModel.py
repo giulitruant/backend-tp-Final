@@ -1,6 +1,12 @@
 from Include.UI.Producto import UIProducto
 from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
+from Include.UI.Factura import UIFactura
+from datetime import date
+# a Borrar
+from Include.Model.model import Solicitud, Solicitud_Detalle, Cliente
+from Include.Model.model import db
+
 from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 
@@ -57,6 +63,45 @@ def ObtenerProductosPorProveedor():
             response = jsonify({
                 'msj': 'El cuit debe contener 11 numeros'
             })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+    except ValueError as ve:
+        response = jsonify({
+            'msj': 'El campo no es correcto'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+    except Exception as e:
+        print(e.args)
+        response = jsonify({
+                'msj':'Error al objetener el producto'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+#sin uso por el momento
+@app.route('/getProductos', methods=['GET'])
+def ObtenerProductos():
+    try:
+        #prov = str(request.args['proveedor'])
+        #if len(prov) == 11:
+        np = UIProducto()
+        lista = np.getProductos()
+        response = jsonify({
+            "producto": [{"id": x.id_prod,
+                          "descripcion": x.descripcion,
+                          "precioUnitario" : x.precio_uni,
+                          "stock" : x.cant_stock,
+                        "cantidad_minima_stock": x.cant_min,
+                        "proveedor": x.cuit
+                        } for x in lista],
+            'msj':''
+            })
+        #else:
+         #   response = jsonify({
+          #      'msj': 'El cuit debe contener 11 numeros'
+           # })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
     except ValueError as ve:
@@ -474,6 +519,44 @@ def addSolicitud():
 
 
     
+@app.route('/add-Compra', methods=['POST'])
+def addCompra():
+    try:
+        nroSolicitudCompra = request.json['nroSolicitud']
+        solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        cliente = Cliente.query.filter_by(dni=solic.dni_cliente)
+        detSolic = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        tipo = request.json['tipo']
+        cuenta = request.json['cuenta']
+        formaPago = request.json['formaPago']
+        if formaPago == 'tarjeta':
+            nomTarjeta = request.json['nomTarjeta']
+            num_tarjeta = request.json['num_tarjeta']
+            cant_cuotas = request.json['cant_cuotas']
+            factura = UIFactura.alta(nroSolicitudCompra, formaPago, nomTarjeta, num_tarjeta, cuenta, cant_cuotas, tipo)
+        else:
+            factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
+
+
+    except Exception as ex:
+        print(ex)
+        jsonify({
+            'nroFactura': factura.id,
+            'fecha': date.today(),
+            'tipoFactura': factura.tipo,
+            'razonSocial': cliente.nombre + cliente.apellido,
+            'Domicilio': cliente.direccion,
+            'telefono': cliente.tel,
+            'dni': cliente.dni,
+            "producto": [{"cant": x.cantidad,
+                          "Descripcion": x.nombre,
+                          "apellido": x.apellido,
+                          "precioU": x.tel,
+                          "importe": x.email,
+                          } for x in detSolic],
+            'importeTotal': factura.total
+        })
+
 #If we're running in  stand alone mode,run the application
 if __name__ == '__main__':
     app.run(debug=True)

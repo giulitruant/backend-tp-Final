@@ -2,8 +2,6 @@ from Include.Model.model import Producto
 from Include.UI.Proveedor import UIProveedor
 from Include.Model.model import db
 
-
-
 class UIProducto():
 
     def alta(self, desc, prec_u, stock, cantM, prov):
@@ -32,11 +30,21 @@ class UIProducto():
 
     def getProductos(self, cuit):
         try:
-            listaProductos = Producto.query.filter_by(cuit=cuit).all()
-            if listaProductos.__len__() > 0:
-                return listaProductos
+
+            if not cuit is None and cuit != '':
+                # Si tengo el cuit devuelvo solamente los productos del proveedor
+                listaProductos = Producto.query.filter_by(cuit=cuit).all()
+                if listaProductos.__len__() > 0:
+                    return listaProductos
+                else:
+                    'No tiene productos cargados'
             else:
-                'No tiene productos cargados'
+                # Si no viene cuit es porque tengo que devolver todos los productos
+                listaProductos = Producto.query.filter_by().all()
+                if listaProductos.__len__() > 0:
+                    return listaProductos
+                else:
+                    'No tiene productos cargados'
 
         except ValueError as e:
             return 'Hubo un error al recuperar la lista de productos'
