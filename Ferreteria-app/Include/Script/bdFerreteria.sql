@@ -102,20 +102,20 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `bdferreteria`.`solicitud_detalle`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `bdferreteria`.`solicitud_detalle` (
-  `id_detalle` INT NOT NULL AUTO_INCREMENT ,
-  `nro_solicitud` INT(11) NOT NULL ,
+  `idDetalle` INT NOT NULL AUTO_INCREMENT ,
+  `nroSolicitud` INT(11) NOT NULL ,
   `cantidad` FLOAT NULL ,
-  `id_prod` INT(11) NOT NULL ,
-  PRIMARY KEY (`id_detalle`, `nro_solicitud`) ,
-  INDEX `fk_Solicitud_Detalle_solicitud1_idx` (`nro_solicitud` ASC) ,
-  INDEX `fk_Solicitud_Detalle_producto1_idx` (`id_prod` ASC) ,
+  `idProd` INT(11) NOT NULL ,
+  PRIMARY KEY (`idDetalle`, `nroSolicitud`) ,
+  INDEX `fk_Solicitud_Detalle_solicitud1_idx` (`nroSolicitud` ASC) ,
+  INDEX `fk_Solicitud_Detalle_producto1_idx` (`idProd` ASC) ,
   CONSTRAINT `fk_Solicitud_Detalle_solicitud1`
-    FOREIGN KEY (`nro_solicitud` )
+    FOREIGN KEY (`nroSolicitud` )
     REFERENCES `bdferreteria`.`solicitud` (`nro_solicitud` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Solicitud_Detalle_producto1`
-    FOREIGN KEY (`id_prod` )
+    FOREIGN KEY (`idProd` )
     REFERENCES `bdferreteria`.`producto` (`id_prod` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)

@@ -11,30 +11,6 @@ class Proveedor(db.Model):
     direccion = db.Column(db.String(50), unique=True)
     productos = db.relationship("Producto", backref='proveedor', lazy=True)
 
-class Producto(db.Model):
-    id_prod = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    descripcion = db.Column(db.String(50))
-    precio_uni = db.Column(db.Float)
-    cant_stock = db.Column(db.Integer)
-    cant_min = db.Column(db.Integer)
-    cuit = db.Column(db.Integer, db.ForeignKey('proveedor.cuit'), nullable=False)
-    solic = db.relationship("Solicitud_Detalle", backref='producto', lazy=True)
-
-
-class Solicitud_Detalle(db.Model):
-    id_detalle = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nro_solicitud = db.Column(db.Integer, db.ForeignKey('solicitud.nro_solicitud'), primary_key=True, nullable=False)
-    cantidad = db.Column(db.Float , nullable=False)
-    id_prod = db.Column(db.Integer, db.ForeignKey('producto.id_prod'), nullable=False)
-
-class Solicitud(db.Model):
-    nro_solicitud = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    dni_cliente = db.Column(db.Integer, db.ForeignKey('cliente.dni'))
-    precio_total = db.Column(db.Float, nullable=False )
-    fecha_solicitud = db.Column(db.String(20), nullable=False)
-    fact = db.relationship('Factura', backref='solicitud', lazy=True)
-    sol_det = db.relationship('Solicitud_Detalle', backref='solicitud', lazy=True)
-
 class Cliente(db.Model):
     dni = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(20), unique=True)
@@ -43,6 +19,31 @@ class Cliente(db.Model):
     email = db.Column(db.String(50), unique=True)
     direccion = db.Column(db.String(50), unique=True)
     solic = db.relationship('Solicitud', backref='cliente', lazy=True)
+
+class Producto(db.Model):
+    id_prod = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    descripcion = db.Column(db.String(50))
+    precio_uni = db.Column(db.Float)
+    cant_stock = db.Column(db.Integer)
+    cant_min = db.Column(db.Integer)
+    cuit = db.Column(db.Integer, db.ForeignKey('proveedor.cuit'), nullable=False)
+    solic = db.relationship("SolicitudDetalle", backref='producto', lazy=True)
+
+class Solicitud(db.Model):
+    nro_solicitud = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    dni_cliente = db.Column(db.Integer, db.ForeignKey('cliente.dni'))
+    #precio_total = db.Column(db.Float, nullable=False )
+    fecha_solicitud = db.Column(db.String(20), nullable=False)
+    fact = db.relationship('Factura', backref='solicitud', lazy=True)
+    sol_det = db.relationship('SolicitudDetalle', backref='solicitud', lazy=True)
+
+
+class SolicitudDetalle(db.Model):
+    idDetalle = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nroSolicitud = db.Column(db.Integer, db.ForeignKey('solicitud.nro_solicitud'), primary_key=True, nullable=False)
+    cantidad = db.Column(db.Float , nullable=False)
+    idProd = db.Column(db.Integer, db.ForeignKey('producto.id_prod'), nullable=False)
+
 
 class Factura(db.Model):
     id_factura = db.Column(db.Integer, primary_key=True, autoincrement=True)
