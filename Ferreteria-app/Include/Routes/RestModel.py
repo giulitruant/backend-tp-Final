@@ -2,9 +2,12 @@ from Include.UI.Producto import UIProducto
 from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
 from Include.UI.Factura import UIFactura
+from Include.UI.Solicitud import UISolicitud
+from Include.UI.Solicitud_Detalle import UISolicitudDetalle
 from datetime import date
+
 # a Borrar
-from Include.Model.model import Solicitud, Solicitud_Detalle, Cliente
+from Include.Model.model import Solicitud, SolicitudDetalle, Cliente
 from Include.Model.model import db
 
 from flask import Flask, request, jsonify, json
@@ -496,7 +499,7 @@ def ObtenerClientes():
 def addSolicitud():
     try:
         dni = request.args['dni_cliente']
-        precio = request.args['precio_total']
+        #precio = request.args['precio_total']
         fecha_sol = request.args['fecha_solicitud']
         #Agregar fecha_vto_solicitud
         sol_details = request.args['solicitud']
@@ -505,16 +508,56 @@ def addSolicitud():
         if sol:
             for det in sol_details:
                 sd = UISolicitudDetalle()
-                rta_detalle = sd.Alta(sol.nro_solicitud,det.cantidad,det.prod)
-        #response = jsonify({
-                #'msj': 
-            #})
+                nuevo_detalle = sd.Alta(sol.nro_solicitud,det.cantidad,det.prod)
+        response = jsonify({
+            'msj': 'ok'
+        })
+    except Exception as ex:
+        response = jsonify({
+            'msj': 'Error de servicio'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
+
 
 #hacer un get solicitud devolviendo un json con los datos de la solicitud y el cliente
 
 
+@app.route('/getSolicitud')
+def getSolicitud():
+    try:
+        nro_sol= request.args['nro_solicitud']
+        sol = UISolicitud()
+        obj = sol.buscarSolicitud(nro_sol)
+        if obj :
+            #si encuentro el objeto busco los detalles de la solicitud
+            det = UISolicitudDetalle()
+            #ahora genero la lista a devolver con el detalle de las solicitudes
+            listDet = det.getListDetalleSolicitud(obj.nro_solicutd)
+            if listDet:
+                response = jsonify({
+                    'nro_solicitud' : obj.nro_solicitud,
+                    'dni_cliente': obj.dni_cliente,
+                    'fecha_solicitud':obj.fecha_solicitud,
+                    'sol_det':listDet
 
-            
+                })
+            else:
+                response = jsonify({
+                    'msj':'Error al obtener los detalles de la Solicitud'
+                })
+        else:
+            response = jsonify({
+                        'msj': 'Error al obtener los detalles de la Solicitud'
+            })
+    except Exception as ex:
+        response = jsonify({
+            'msj': 'Error al obtener los detalles de la Solicitud'
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
 
 
 
@@ -525,7 +568,7 @@ def addCompra():
         nroSolicitudCompra = request.json['nroSolicitud']
         solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
         cliente = Cliente.query.filter_by(dni=solic.dni_cliente)
-        detSolic = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        detSolic = SolicitudDetalle.query.filter_by(nro_solicitud=nroSolicitudCompra)
         tipo = request.json['tipo']
         cuenta = request.json['cuenta']
         formaPago = request.json['formaPago']

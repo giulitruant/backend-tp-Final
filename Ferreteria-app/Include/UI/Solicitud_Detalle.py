@@ -1,4 +1,4 @@
-from Include.Model.model import Solicitud_Detalle
+from Include.Model.model import SolicitudDetalle
 from Include.Model.model import db
 from Include.UI.Solicitud import UISolicitud
 from Include.UI.Producto import UIProducto
@@ -8,13 +8,21 @@ class UISolicitudDetalle():
     def Alta(self,nro_sol,cant,prod):
         try:
             if self.validaSolicitud():
-                SolDet = Solicitud_Detalle(nro_solicitud = nro_sol , cantidad = cant , id_prod = prod)
+                SolDet = SolicitudDetalle(nro_solicitud = nro_sol , cantidad = cant , id_prod = prod)
                 db.session.add(SolDet)
                 db.session.commit()
-                return 'ok'
+                return SolDet
             else:
-                return 'Error en generar la solicitud'
+                return None
         except TypeError as ex:
+            return 'Error de servicio'
+
+    def getListDetalleSolicitud(self, id_sol):
+        try:
+            listDet = SolicitudDetalle.query.filter_by(nro_solicitud = id_sol).all()
+            return listDet
+        except exc.SQLAlchemyError as e:
+            print(e.args)
             return 'Error de servicio'
 
 
