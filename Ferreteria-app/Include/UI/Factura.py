@@ -1,22 +1,22 @@
 from Include.Model.model import Factura, Solicitud, Producto, Solicitud_Detalle
 from Include.UI.Proveedor import UIProveedor
+from Include.UI.Cliente import UICliente
 from Include.Model.model import db
 
 class UIFactura():
 
     def alta(self, nroSolicitud, formaPago,  tipo, cuenta = '', nomTarjeta = '', num_tarjeta = '', cant_cuotas = ''):
         try:
+            facturacion = tuple
             fact = Factura()
             fact.tipo = tipo
             fact.forma_pago = formaPago
             solic = Solicitud()
-            #solicDet = Solicitud_Detalle()
+            # solicDet = Solicitud_Detalle()
             solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitud)
-            if solic is None:
-                return 'No existe la solicitud'
-
-                
             lstSolicDet = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitud)
+            uiCliente = UICliente
+            cliente = uiCliente.BuscarCliente(solic.dni_cliente)
             total = 0
             for value in lstSolicDet:
                 cantProd = int(value.cantidad)
@@ -35,7 +35,9 @@ class UIFactura():
             db.session.add(fact)
             db.session.commit()
 
-            return fact
+            facturacion.append(fact)
+            facturacion.append(cliente)
+            facturacion.append(lstSolicDet)
 
         except ValueError:
             return 'Hubo un error al agregar el producto'
