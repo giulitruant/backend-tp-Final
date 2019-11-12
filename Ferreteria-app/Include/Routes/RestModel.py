@@ -550,12 +550,16 @@ def getSolicitud():
 def EmitirFactura():
     try:
         nroSolicitudCompra = request.args['solicitud']
-        #solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
-        #if solic is None:
-        #    response = jsonify({
-        #        'msj':'Error de servicio'
-        #    })
-        #    return response
+        solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        if solic is None:
+            response = jsonify({
+                'msj':'Error de servicio'
+            })
+            return response
+
+        uiCliente = UICliente()
+        cliente = uiCliente.BuscarCliente(solic.dni_cliente)
+
 
         #cliente = Cliente.query.filter_by(dni=solic.dni_cliente)
         #detSolic = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitudCompra)
@@ -572,22 +576,22 @@ def EmitirFactura():
         #    factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
 
         #prod = UIProducto
-        detSolic= Producto.query.filter_by().all()
+        detSolic = Producto.query.filter_by().all()
         response = jsonify({
-            'nroFactura': 1,#factura.id,
-            'fecha': '2019-11-11',#date.today(),
-            'tipoFactura': 'B',#factura.tipo,
-            'razonSocialCli': 'jacinto Gonzales',#cliente.nombre + cliente.apellido,
-            'domicilioCli': 'sarmiento 123',#cliente.direccion,
-            'telefonoCli': '123321123',#cliente.tel,
-            'dni': '123123123',#cliente.dni,
-            "producto": [{"cant": 15,#x.cantidad,
-                          "Descripcion": x.descripcion,
+            'nroFactura': factura.id,
+            'fecha': date.today(),
+            'tipoFactura': factura.tipo,
+            'razonSocialCli': cliente.nombre + cliente.apellido,
+            'domicilioCli': cliente.direccion,
+            'telefonoCli': cliente.tel,
+            'dni': cliente.dni,
+            "producto": [{"cant": x.cantidad,
+                          "Descripcion": Producto.query.filter_by(Producto.descripcion),
                           "codigo": x.id_prod,
                           "precioU": x.precio_uni,
                           "importe": x.cant_stock,
                           } for x in detSolic],
-            'importeTotal': '2500'#factura.total
+            'importeTotal': '2500'
         })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response

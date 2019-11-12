@@ -12,6 +12,10 @@ class UIFactura():
             solic = Solicitud()
             #solicDet = Solicitud_Detalle()
             solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitud)
+            if solic is None:
+                return 'No existe la solicitud'
+
+                
             lstSolicDet = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitud)
             total = 0
             for value in lstSolicDet:
