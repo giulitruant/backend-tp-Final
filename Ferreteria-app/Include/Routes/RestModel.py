@@ -622,37 +622,29 @@ def addCompra():
             factura = UIFactura.alta(nroSolicitudCompra, formaPago, nomTarjeta, num_tarjeta, cuenta, cant_cuotas, tipo)
         else:
             factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
+            
 @app.route('/EmitirFactura')
 def EmitirFactura():
     try:
+        Solicitud = request.json['solicitud']
         nroSolicitudCompra = request.args['solicitud']
-        facturacion = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        pago = request.args['tipo_pago']
+        nom_tarjeta, nro_tarjeta, cuenta, cuotas=None
+        if pago == 'tarjeta':
+            nom_tarjeta = request.args['nom_tarjeta']
+            nro_tarjeta = request.args['nro_tarjeta']
+            cuenta = request.args['cuenta']
+            cuotas = request.args['cuotas']
+
+        uiFactura = UISolicitud()
+        facturacion = uiFactura.Alta(nroSolicitudCompra, pago, cuenta, nom_tarjeta, nro_tarjeta, cuotas)
+        #facturacion = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
         if facturacion is None:
             response = jsonify({
                 'msj':'Error de servicio'
             })
             return response
 
-        #uiCliente = UICliente()
-        #cliente = uiCliente.BuscarCliente(solic.dni_cliente)
-
-
-        #cliente = Cliente.query.filter_by(dni=solic.dni_cliente)
-        #detSolic = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitudCompra)
-        #tipo = request.json['tipo']
-        #cuenta = request.json['cuenta']
-        #formaPago = request.json['formaPago']
-        #factura = Factura()
-        #if formaPago == 'tarjeta':
-        #    nomTarjeta = request.json['nomTarjeta']
-        #    num_tarjeta = request.json['num_tarjeta']
-        #    cant_cuotas = request.json['cant_cuotas']
-        #    factura = UIFactura.alta(nroSolicitudCompra, formaPago, nomTarjeta, num_tarjeta, cuenta, cant_cuotas, tipo)
-        #else:
-        #    factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
-
-        #prod = UIProducto
-        detSolic = Producto.query.filter_by().all()
         response = jsonify({
             'nroFactura': facturacion.factura.id,
             'fecha': date.today(),
