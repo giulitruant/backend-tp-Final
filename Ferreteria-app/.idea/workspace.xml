@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="429bd345-7bda-4e9f-9a26-3ba99730cabb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/venv/Include/UI/Factura.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Ferreteria-app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Ferreteria-app.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Include/Model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/Include/Model/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Include/Routes/RestModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Include/Routes/RestModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Include/UI/Factura.py" beforeDir="false" afterPath="$PROJECT_DIR$/Include/UI/Factura.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Include/UI/Producto.py" beforeDir="false" afterPath="$PROJECT_DIR$/Include/UI/Producto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Include/UI/Solicitud_Detalle.py" beforeDir="false" afterPath="$PROJECT_DIR$/Include/UI/Solicitud_Detalle.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Include/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/Include/config.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,7 +40,70 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.model">
+  <component name="RunManager" selected="Python.RestModel">
+    <configuration name="RestModel" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Ferreteria-app" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Include/Routes" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Include/Routes/RestModel.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Solicitud" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Ferreteria-app" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Include/UI" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Include/UI/Solicitud.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Solicitud_Detalle" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Ferreteria-app" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Include/UI" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Include/UI/Solicitud_Detalle.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="config" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Ferreteria-app" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -77,9 +148,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.RestModel" />
         <item itemvalue="Python.model" />
         <item itemvalue="Python.config" />
-        <item itemvalue="Python.config" />
+        <item itemvalue="Python.Solicitud_Detalle" />
+        <item itemvalue="Python.Solicitud" />
       </list>
     </recent_temporary>
   </component>
@@ -108,5 +181,26 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Include/Routes/RestModel.py</url>
+          <line>505</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Include/Model/model.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Include/Routes/RestModel.py</url>
+          <line>576</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

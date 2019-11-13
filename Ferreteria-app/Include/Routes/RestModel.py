@@ -8,6 +8,7 @@ from datetime import date
 
 # a Borrar
 from Include.Model.model import Solicitud, SolicitudDetalle, Cliente
+from Include.Model.model import Solicitud, Solicitud_Detalle, Cliente, Factura, Producto
 from Include.Model.model import db
 
 from flask import Flask, request, jsonify, json
@@ -24,10 +25,10 @@ db = SQLAlchemy(app)
 def AgregarProducto():
     try:
         desc = request.json['descripcion']
-        precio_u = request.json['precio_u']
+        precio_u = request.json['precioU']
         stock = request.json['stock']
-        cantM = request.json['cant_min']
-        prov = request.json['proveedor']
+        cantM = request.json['cantMin']
+        prov = request.json['cuit']
         np = UIProducto()
         msj = np.alta(desc, precio_u, stock, cantM, prov)
         response = jsonify(
@@ -89,15 +90,16 @@ def ObtenerProductos():
     try:
         #prov = str(request.args['proveedor'])
         #if len(prov) == 11:
+        cuit = ''
         np = UIProducto()
-        lista = np.getProductos()
+        lista = np.getProductos(cuit)
         response = jsonify({
             "producto": [{"id": x.id_prod,
                           "descripcion": x.descripcion,
-                          "precioUnitario" : x.precio_uni,
+                          "precioU" : x.precio_uni,
                           "stock" : x.cant_stock,
-                        "cantidad_minima_stock": x.cant_min,
-                        "proveedor": x.cuit
+                        "cantMin": x.cant_min,
+                        "cuit": x.cuit
                         } for x in lista],
             'msj':''
             })
@@ -206,9 +208,9 @@ def ActualizarProducto():
 @app.route('/addProveedor', methods=['POST'])
 def addProveedor():
     try:
-        file = json.loads(request.data)
-        js = request.get_json()
-        jso = jsonify(js)
+        #file = json.loads(request.data)
+        #js = request.get_json()
+        #jso = jsonify(js)
         cuit = request.json['cuit']
         nombre = request.json['nombre']
         apellido = request.json['apellido']
@@ -520,9 +522,47 @@ def addSolicitud():
         return response
 
 
+#@app.route('/addSolicitud' , methods=['POST'])
+#def addSolicitud():
+#    try:
+#        dni = request.args['dni_cliente']
+#        precio = request.args['precio_total']
+#        fecha_sol = request.args['fecha_solicitud']
+#        #Agregar fecha_vto_solicitud
+#        sol_details = request.args['solicitud']
+#        s = UISolicitud()
+#        sol = s.Alta(dni = dni, precio = precio,fecha = fecha_sol)
+        #if sol:
+            #for det in sol_details:
+                #sd = UISolicitudDetalle()
+                #rta_detalle = sd.Alta(sol.nro_solicitud,det.cantidad,det.prod)
+        #response = jsonify({
+                #'msj': 
+            #})
 
 #hacer un get solicitud devolviendo un json con los datos de la solicitud y el cliente
 
+@app.route('/getSolicitud')
+def getSolicitud():
+    try:
+        nroSolicitud = request.args['nroSolicitud']
+        p = UISolicitud()
+        obj = p.buscarSolicitud(nroSolicitud)
+        if not obj.cuit is None:
+            response = jsonify({
+                'cuit': obj.cuit,
+                'nombre': obj.nombre,
+                'apellido': obj.apellido,
+                'telefono':obj.tel,
+                'email':obj.email,
+                'direccion':obj.direccion
+            })
+        else:
+            response = jsonify({
+                'msj':obj
+            })
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response
 
 @app.route('/getSolicitud')
 def getSolicitud():
@@ -554,6 +594,9 @@ def getSolicitud():
     except Exception as ex:
         response = jsonify({
             'msj': 'Error al obtener los detalles de la Solicitud'
+    except Exception as e:
+        response = jsonify({
+            'msj': 'Error de servicio'
         })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
@@ -579,26 +622,64 @@ def addCompra():
             factura = UIFactura.alta(nroSolicitudCompra, formaPago, nomTarjeta, num_tarjeta, cuenta, cant_cuotas, tipo)
         else:
             factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
+@app.route('/EmitirFactura')
+def EmitirFactura():
+    try:
+        nroSolicitudCompra = request.args['solicitud']
+        facturacion = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        if facturacion is None:
+            response = jsonify({
+                'msj':'Error de servicio'
+            })
+            return response
 
+        #uiCliente = UICliente()
+        #cliente = uiCliente.BuscarCliente(solic.dni_cliente)
+
+
+        #cliente = Cliente.query.filter_by(dni=solic.dni_cliente)
+        #detSolic = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        #tipo = request.json['tipo']
+        #cuenta = request.json['cuenta']
+        #formaPago = request.json['formaPago']
+        #factura = Factura()
+        #if formaPago == 'tarjeta':
+        #    nomTarjeta = request.json['nomTarjeta']
+        #    num_tarjeta = request.json['num_tarjeta']
+        #    cant_cuotas = request.json['cant_cuotas']
+        #    factura = UIFactura.alta(nroSolicitudCompra, formaPago, nomTarjeta, num_tarjeta, cuenta, cant_cuotas, tipo)
+        #else:
+        #    factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
+
+        #prod = UIProducto
+        detSolic = Producto.query.filter_by().all()
+        response = jsonify({
+            'nroFactura': facturacion.factura.id,
+            'fecha': date.today(),
+            'tipoFactura': facturacion.factura.tipo,
+            'razonSocialCli': facturacion.cliente.nombre + facturacion.cliente.apellido,
+            'domicilioCli': facturacion.cliente.direccion,
+            'telefonoCli': facturacion.cliente.tel,
+            'dni': facturacion.cliente.dni,
+            "producto": [{"cant": x.cantidad,
+                          "Descripcion": x.descripcion,
+                          "codigo": x.id_prod,
+                          "precioU": x.precio_uni,
+                          "importe": x.cant_stock,
+                          } for x in facturacion.detSolic],
+            'importeTotal': facturacion.total
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
 
     except Exception as ex:
         print(ex)
-        jsonify({
-            'nroFactura': factura.id,
-            'fecha': date.today(),
-            'tipoFactura': factura.tipo,
-            'razonSocial': cliente.nombre + cliente.apellido,
-            'Domicilio': cliente.direccion,
-            'telefono': cliente.tel,
-            'dni': cliente.dni,
-            "producto": [{"cant": x.cantidad,
-                          "Descripcion": x.nombre,
-                          "apellido": x.apellido,
-                          "precioU": x.tel,
-                          "importe": x.email,
-                          } for x in detSolic],
-            'importeTotal': factura.total
+        response = jsonify({
+            'msj':'Error de servicio'
         })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+
 
 #If we're running in  stand alone mode,run the application
 if __name__ == '__main__':

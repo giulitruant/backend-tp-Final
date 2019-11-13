@@ -41,6 +41,23 @@ class UISolicitudDetalle():
             print(ex)
             return False
 
+    def getSolicitudDetalle(self, nroSol):
+
+        try:
+            if not nroSol is None and nroSol != '':
+                detSolicitud = UISolicitud.query.filter_by(nro_solicitud=nroSol).all()
+                if not detSolicitud is None:
+                    return detSolicitud
+                else:
+                    return 'No existe detalles de solicitud con dicho nro de solicitud'
+            else:
+                return 'Nro solicitud invalida'
+        
+        except TypeError as e:
+            print('Error:'+ e)
+            return 'Error de servicio'
+
+
 
 
                 

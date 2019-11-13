@@ -28,10 +28,10 @@ class UIProducto():
         except ValueError:
             return 'Hubo un error al agregar el producto'
 
-    def getProductos(self, cuit):
+    def getProductosPorProveedor(self, cuit):
         try:
 
-            if not cuit is None and cuit != '':
+            if not cuit is None and cuit != ' ':
                 # Si tengo el cuit devuelvo solamente los productos del proveedor
                 listaProductos = Producto.query.filter_by(cuit=cuit).all()
                 if listaProductos.__len__() > 0:
@@ -45,6 +45,18 @@ class UIProducto():
                     return listaProductos
                 else:
                     'No tiene productos cargados'
+
+        except ValueError as e:
+            return 'Hubo un error al recuperar la lista de productos'
+
+    def getProducto(self, sol):
+        try:
+            # Si no viene cuit es porque tengo que devolver todos los productos
+            listaProductos = Producto.query.filter_by().all()
+            if listaProductos.__len__() > 0:
+                return listaProductos
+            else:
+                'No tiene productos cargados'
 
         except ValueError as e:
             return 'Hubo un error al recuperar la lista de productos'

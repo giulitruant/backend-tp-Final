@@ -2,15 +2,6 @@ from Include.config import conexion
 
 db = conexion()
 
-class Proveedor(db.Model):
-    cuit = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(20), unique=True)
-    apellido = db.Column(db.String(120), unique=True)
-    tel = db.Column(db.String(20), unique=True)
-    email = db.Column(db.String(50), unique=True)
-    direccion = db.Column(db.String(50), unique=True)
-    productos = db.relationship("Producto", backref='proveedor', lazy=True)
-
 class Cliente(db.Model):
     dni = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(20), unique=True)
@@ -20,6 +11,15 @@ class Cliente(db.Model):
     direccion = db.Column(db.String(50), unique=True)
     solic = db.relationship('Solicitud', backref='cliente', lazy=True)
 
+class Proveedor(db.Model):
+    cuit = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(20), unique=True)
+    apellido = db.Column(db.String(120), unique=True)
+    tel = db.Column(db.String(20), unique=True)
+    email = db.Column(db.String(50), unique=True)
+    direccion = db.Column(db.String(50), unique=True)
+    productos = db.relationship("Producto", backref='proveedor', lazy=True)
+
 class Producto(db.Model):
     id_prod = db.Column(db.Integer, primary_key=True, autoincrement=True)
     descripcion = db.Column(db.String(50))
@@ -28,6 +28,8 @@ class Producto(db.Model):
     cant_min = db.Column(db.Integer)
     cuit = db.Column(db.Integer, db.ForeignKey('proveedor.cuit'), nullable=False)
     solic = db.relationship("SolicitudDetalle", backref='producto', lazy=True)
+
+
 
 class Solicitud(db.Model):
     nro_solicitud = db.Column(db.Integer, primary_key=True, autoincrement=True)
