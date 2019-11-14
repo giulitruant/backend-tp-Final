@@ -521,49 +521,6 @@ def addSolicitud():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-
-#@app.route('/addSolicitud' , methods=['POST'])
-#def addSolicitud():
-#    try:
-#        dni = request.args['dni_cliente']
-#        precio = request.args['precio_total']
-#        fecha_sol = request.args['fecha_solicitud']
-#        #Agregar fecha_vto_solicitud
-#        sol_details = request.args['solicitud']
-#        s = UISolicitud()
-#        sol = s.Alta(dni = dni, precio = precio,fecha = fecha_sol)
-        #if sol:
-            #for det in sol_details:
-                #sd = UISolicitudDetalle()
-                #rta_detalle = sd.Alta(sol.nro_solicitud,det.cantidad,det.prod)
-        #response = jsonify({
-                #'msj': 
-            #})
-
-#hacer un get solicitud devolviendo un json con los datos de la solicitud y el cliente
-
-#@app.route('/getSolicitud')
-#def getSolicitud():
-        # try:
-        #nroSolicitud = request.args['nroSolicitud']
-        #p = UISolicitud()
-        #obj = p.buscarSolicitud(nroSolicitud)
-        #if not obj.cuit is None:
-         #   response = jsonify({
-          #      'cuit': obj.cuit,
-           #     'nombre': obj.nombre,
-            #    'apellido': obj.apellido,
-           #     'telefono':obj.tel,
-            #    'email':obj.email,
-             #   'direccion':obj.direccion
-            #})
-        #else:
-         #   response = jsonify({
-          #      'msj':obj
-           # })
-            #response.headers.add('Access-Control-Allow-Origin', '*')
-            #return response
-
 @app.route('/getSolicitud')
 def getSolicitud():
     try:
@@ -598,34 +555,6 @@ def getSolicitud():
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-
-
-
-    
-@app.route('/add-Compra', methods=['POST'])
-def addCompra():
-    try:
-        nroSolicitudCompra = request.json['nroSolicitud']
-        solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
-        cliente = Cliente.query.filter_by(dni=solic.dni_cliente)
-        detSolic = SolicitudDetalle.query.filter_by(nro_solicitud=nroSolicitudCompra)
-        tipo = request.json['tipo']
-        cuenta = request.json['cuenta']
-        formaPago = request.json['formaPago']
-        if formaPago == 'tarjeta':
-            nomTarjeta = request.json['nomTarjeta']
-            num_tarjeta = request.json['num_tarjeta']
-            cant_cuotas = request.json['cant_cuotas']
-            factura = UIFactura.alta(nroSolicitudCompra, formaPago, nomTarjeta, num_tarjeta, cuenta, cant_cuotas, tipo)
-        else:
-            factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
-
-    except Exception as e:
-            response = jsonify({
-            'msj': 'Error de servicio'
-            })
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            return response
             
 @app.route('/EmitirFactura')
 def EmitirFactura():
