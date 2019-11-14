@@ -1,4 +1,4 @@
-from Include.Model.model import Factura, Solicitud, Producto, Solicitud_Detalle
+from Include.Model.model import Factura, Solicitud, Producto, SolicitudDetalle
 from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
 from Include.Model.model import db
@@ -11,11 +11,11 @@ class UIFactura():
             fact = Factura()
             fact.forma_pago = formaPago
             solic = Solicitud()
-            solicDet = Solicitud_Detalle()
+            solicDet = SolicitudDetalle()
             solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitud)
             if solic is None:
                 return None
-            lstSolicDet = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitud)
+            lstSolicDet = SolicitudDetalle.query.filter_by(nro_solicitud=nroSolicitud)
             if lstSolicDet is None:
                 return None
             uiCliente = UICliente

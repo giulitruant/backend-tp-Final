@@ -7,9 +7,9 @@ from Include.UI.Solicitud_Detalle import UISolicitudDetalle
 from datetime import date
 
 # a Borrar
-from Include.Model.model import Solicitud, SolicitudDetalle, Cliente
-from Include.Model.model import Solicitud, Solicitud_Detalle, Cliente, Factura, Producto
-from Include.Model.model import db
+#from Include.Model.model import Solicitud, SolicitudDetalle, Cliente
+#from Include.Model.model import Solicitud, Solicitud_Detalle, Cliente, Factura, Producto
+#from Include.Model.model import db
 
 from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
@@ -542,27 +542,27 @@ def addSolicitud():
 
 #hacer un get solicitud devolviendo un json con los datos de la solicitud y el cliente
 
-@app.route('/getSolicitud')
-def getSolicitud():
-    try:
-        nroSolicitud = request.args['nroSolicitud']
-        p = UISolicitud()
-        obj = p.buscarSolicitud(nroSolicitud)
-        if not obj.cuit is None:
-            response = jsonify({
-                'cuit': obj.cuit,
-                'nombre': obj.nombre,
-                'apellido': obj.apellido,
-                'telefono':obj.tel,
-                'email':obj.email,
-                'direccion':obj.direccion
-            })
-        else:
-            response = jsonify({
-                'msj':obj
-            })
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            return response
+#@app.route('/getSolicitud')
+#def getSolicitud():
+        # try:
+        #nroSolicitud = request.args['nroSolicitud']
+        #p = UISolicitud()
+        #obj = p.buscarSolicitud(nroSolicitud)
+        #if not obj.cuit is None:
+         #   response = jsonify({
+          #      'cuit': obj.cuit,
+           #     'nombre': obj.nombre,
+            #    'apellido': obj.apellido,
+           #     'telefono':obj.tel,
+            #    'email':obj.email,
+             #   'direccion':obj.direccion
+            #})
+        #else:
+         #   response = jsonify({
+          #      'msj':obj
+           # })
+            #response.headers.add('Access-Control-Allow-Origin', '*')
+            #return response
 
 @app.route('/getSolicitud')
 def getSolicitud():
@@ -591,9 +591,6 @@ def getSolicitud():
             response = jsonify({
                         'msj': 'Error al obtener los detalles de la Solicitud'
             })
-    except Exception as ex:
-        response = jsonify({
-            'msj': 'Error al obtener los detalles de la Solicitud'
     except Exception as e:
         response = jsonify({
             'msj': 'Error de servicio'
@@ -622,6 +619,13 @@ def addCompra():
             factura = UIFactura.alta(nroSolicitudCompra, formaPago, nomTarjeta, num_tarjeta, cuenta, cant_cuotas, tipo)
         else:
             factura = UIFactura.alta(nroSolicitudCompra, formaPago, cuenta, tipo)
+
+    except Exception as e:
+            response = jsonify({
+            'msj': 'Error de servicio'
+            })
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response
             
 @app.route('/EmitirFactura')
 def EmitirFactura():
