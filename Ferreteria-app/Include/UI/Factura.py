@@ -1,28 +1,31 @@
-from Include.Model.model import Factura, Solicitud, Producto, Solicitud_Detalle
+from Include.Model.model import Factura, Solicitud, Producto, SolicitudDetalle
 from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
 from Include.Model.model import db
 
 class UIFactura():
 
+    #nroSolicitudCompra, pago, cuenta, nom_tarjeta, nro_tarjeta, cuotas
     def alta(self, nroSolicitud, formaPago, cuenta, nomTarjeta, num_tarjeta, cant_cuotas):
         try:
             facturacion = []
             fact = Factura()
             fact.forma_pago = formaPago
             solic = Solicitud()
-            solicDet = Solicitud_Detalle()
-            solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitud)
+            solicDet = SolicitudDetalle()
+            solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitud).first()
             if solic is None:
                 return None
-            lstSolicDet = Solicitud_Detalle.query.filter_by(nro_solicitud=nroSolicitud)
+            lstSolicDet = SolicitudDetalle.query.filter_by(nroSolicitud=nroSolicitud)
             if lstSolicDet is None:
                 return None
-            uiCliente = UICliente
+            uiCliente = UICliente()
+            dni = solic.dni_cliente
             cliente = uiCliente.BuscarCliente(solic.dni_cliente)
             if cliente is None:
                 return None
 
+            lstSolicDet = SolicitudDetalle.query.filter_by().all()
             total=0
             lstProductos = []
             for value in lstSolicDet:
