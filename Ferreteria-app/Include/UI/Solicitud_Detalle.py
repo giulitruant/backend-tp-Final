@@ -19,7 +19,7 @@ class UISolicitudDetalle():
 
     def getListDetalleSolicitud(self, id_sol):
         try:
-            listDet = SolicitudDetalle.query.filter_by(nro_solicitud = id_sol).all()
+            listDet = SolicitudDetalle.query.filter_by(nroSolicitud = id_sol).all()
             return listDet
         except exc.SQLAlchemyError as e:
             print(e.args)
@@ -30,7 +30,7 @@ class UISolicitudDetalle():
         try:
             if not nro_sol is None:
                 sol = UISolicitud()
-                validaSol = sol.buscarSolicitud(id_sol=nro_sol)
+                validaSol = sol.buscarSolicitud(nro_sol)
                 if not cant is None and not prod is None:
                     p = UIProducto()
                     pr = p.buscarProducto(prod)
@@ -45,7 +45,7 @@ class UISolicitudDetalle():
 
         try:
             if not nroSol is None and nroSol != '':
-                detSolicitud = UISolicitud.query.filter_by(nro_solicitud=nroSol).all()
+                detSolicitud = UISolicitud.query.filter_by(nroSolicitud=nroSol).all()
                 if not detSolicitud is None:
                     return detSolicitud
                 else:
@@ -56,10 +56,6 @@ class UISolicitudDetalle():
         except TypeError as e:
             print('Error:'+ e)
             return 'Error de servicio'
-
-
-
-
                 
 
 

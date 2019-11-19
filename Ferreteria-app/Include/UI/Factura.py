@@ -1,31 +1,32 @@
 from Include.Model.model import Factura, Solicitud, Producto, SolicitudDetalle
 from Include.UI.Proveedor import UIProveedor
+from Include.UI.Solicitud_Detalle import UISolicitudDetalle
 from Include.UI.Cliente import UICliente
 from Include.Model.model import db
 
 class UIFactura():
 
-    #nroSolicitudCompra, pago, cuenta, nom_tarjeta, nro_tarjeta, cuotas
-    def alta(self, nroSolicitud, formaPago, cuenta, nomTarjeta, num_tarjeta, cant_cuotas):
+    def alta(self, nroSolicitud, formaPago, cuenta, nomTarjeta, nro_tarjeta, cant_cuotas):
         try:
             facturacion = []
             fact = Factura()
             fact.forma_pago = formaPago
             solic = Solicitud()
             solicDet = SolicitudDetalle()
-            solic = Solicitud.query.filter_by(nro_solicitud=nroSolicitud).first()
+            solic = Solicitud.query.filter_by(nroSolicitud=nroSolicitud).first()
             if solic is None:
                 return None
-            lstSolicDet = SolicitudDetalle.query.filter_by(nroSolicitud=nroSolicitud)
+            dSol = UISolicitudDetalle()
+            lstSolicDet = dSol.getListDetalleSolicitud(nroSolicitud)
+            #nroSolicitud = SolicitudDetalle()
+            #lstSolicDet = SolicitudDetalle.query.filter_by(nroSolicitud=nroSolicitud)
             if lstSolicDet is None:
                 return None
             uiCliente = UICliente()
-            dni = solic.dni_cliente
-            cliente = uiCliente.BuscarCliente(solic.dni_cliente)
+            cliente = uiCliente.BuscarCliente(solic.dniCliente)
             if cliente is None:
                 return None
 
-            lstSolicDet = SolicitudDetalle.query.filter_by().all()
             total=0
             lstProductos = []
             for value in lstSolicDet:
@@ -52,7 +53,7 @@ class UIFactura():
             if formaPago == 'cuotas':
                 fact.cant_cuotas = cant_cuotas
                 fact.nom_tarjeta = nomTarjeta
-                fact.num_tarjeta = num_tarjeta
+                fact.num_tarjeta = nro_tarjeta
                 fact.cuenta = cuenta
 
             # Ingreso la factura
@@ -66,5 +67,6 @@ class UIFactura():
             #retorno los datos para emitir la factura
             return facturacion
 
-        except ValueError:
+        except ValueError as e:
+            print(e.args)
             return 'Hubo un error al agregar el producto'

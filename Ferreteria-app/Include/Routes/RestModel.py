@@ -6,12 +6,7 @@ from Include.UI.Solicitud import UISolicitud
 from Include.UI.Solicitud_Detalle import UISolicitudDetalle
 from datetime import date
 
-# a Borrar
-#from Include.Model.model import Solicitud, SolicitudDetalle, Cliente
-#from Include.Model.model import Solicitud, Solicitud_Detalle, Cliente, Factura, Producto
-#from Include.Model.model import db
-
-from flask import Flask, request, jsonify, json
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 #Create the application instance
@@ -90,9 +85,8 @@ def ObtenerProductos():
     try:
         #prov = str(request.args['proveedor'])
         #if len(prov) == 11:
-        cuit = ''
         np = UIProducto()
-        lista = np.getProductos(cuit)
+        lista = np.getProductos()
         response = jsonify({
             "producto": [{"id": x.id_prod,
                           "descripcion": x.descripcion,
@@ -501,7 +495,7 @@ def ObtenerClientes():
 def addSolicitud():
     try:
         dni = request.args['dni_cliente']
-        #precio = request.args['precio_total']
+        precio = request.args['precio_total']
         fecha_sol = request.args['fecha_solicitud']
         #Agregar fecha_vto_solicitud
         sol_details = request.args['solicitud']
@@ -554,24 +548,24 @@ def getSolicitud():
         })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
-
             
-@app.route('/EmitirFactura')
+@app.route('/EmitirFactura', methods=['POST'])
 def EmitirFactura():
     try:
-        Solicitud = request.json['solicitud']
-        nroSolicitudCompra = request.args['solicitud']
-        pago = request.args['tipo_pago']
-        nom_tarjeta, nro_tarjeta, cuenta, cuotas=None
+        nroSolicitudCompra = request.json['solicitud']
+        pago = request.json['tipo_pago']
+        nom_tarjeta = ''
+        nro_tarjeta = ''
+        cuenta = ''
+        cuotas = ''
         if pago == 'tarjeta':
-            nom_tarjeta = request.args['nom_tarjeta']
-            nro_tarjeta = request.args['nro_tarjeta']
-            cuenta = request.args['cuenta']
-            cuotas = request.args['cuotas']
+            nom_tarjeta = request.json['nom_tarjeta']
+            nro_tarjeta = request.json['nro_tarjeta']
+            cuenta = request.json['cuenta']
+            cuotas = request.json['cuotas']
 
-        uiFactura = UISolicitud()
-        facturacion = uiFactura.Alta(nroSolicitudCompra, pago, cuenta, nom_tarjeta, nro_tarjeta, cuotas)
-        #facturacion = Solicitud.query.filter_by(nro_solicitud=nroSolicitudCompra)
+        uiFactura = UIFactura()
+        facturacion = uiFactura.alta(nroSolicitudCompra, pago, cuenta, nom_tarjeta, nro_tarjeta, cuotas)
         if facturacion is None:
             response = jsonify({
                 'msj':'Error de servicio'
@@ -604,7 +598,6 @@ def EmitirFactura():
         })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
-
 
 #If we're running in  stand alone mode,run the application
 if __name__ == '__main__':

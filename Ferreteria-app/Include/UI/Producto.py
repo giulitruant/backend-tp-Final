@@ -49,7 +49,7 @@ class UIProducto():
         except ValueError as e:
             return 'Hubo un error al recuperar la lista de productos'
 
-    def getProducto(self, sol):
+    def getProductos(self):
         try:
             # Si no viene cuit es porque tengo que devolver todos los productos
             listaProductos = Producto.query.filter_by().all()

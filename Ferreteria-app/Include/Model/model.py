@@ -21,7 +21,7 @@ class Proveedor(db.Model):
     productos = db.relationship("Producto", backref='proveedor', lazy=True)
 
 class Producto(db.Model):
-    id_prod = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    idProd = db.Column(db.Integer, primary_key=True, autoincrement=True)
     descripcion = db.Column(db.String(50))
     precio_uni = db.Column(db.Float)
     cant_stock = db.Column(db.Integer)
@@ -29,23 +29,19 @@ class Producto(db.Model):
     cuit = db.Column(db.Integer, db.ForeignKey('proveedor.cuit'), nullable=False)
     solic = db.relationship("SolicitudDetalle", backref='producto', lazy=True)
 
-
-
 class Solicitud(db.Model):
-    nro_solicitud = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    dni_cliente = db.Column(db.Integer, db.ForeignKey('cliente.dni'))
-    #precio_total = db.Column(db.Float, nullable=False )
+    nroSolicitud = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    dniCliente = db.Column(db.Integer, db.ForeignKey('cliente.dni'))
+    precio_total = db.Column(db.Float, nullable=False)
     fecha_solicitud = db.Column(db.String(20), nullable=False)
     fact = db.relationship('Factura', backref='solicitud', lazy=True)
     sol_det = db.relationship('SolicitudDetalle', backref='solicitud', lazy=True)
 
-
 class SolicitudDetalle(db.Model):
     idDetalle = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nroSolicitud = db.Column(db.Integer, db.ForeignKey('solicitud.nro_solicitud'), primary_key=True, nullable=False)
-    cantidad = db.Column(db.Float , nullable=False)
-    idProd = db.Column(db.Integer, db.ForeignKey('producto.id_prod'), nullable=False)
-
+    nroSolicitud = db.Column(db.Integer, db.ForeignKey('solicitud.nroSolicitud'), primary_key=True, nullable=False)
+    cantidad = db.Column(db.Float, nullable=False)
+    idProd = db.Column(db.Integer, db.ForeignKey('producto.idProd'), nullable=False)
 
 class Factura(db.Model):
     id_factura = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -56,4 +52,4 @@ class Factura(db.Model):
     cuenta = db.Column(db.String(50))
     num_tarjeta = db.Column(db.String(50))
     cant_cuotas = db.Column(db.Integer)
-    nro_solicitud = db.Column(db.Integer, db.ForeignKey('solicitud.nro_solicitud'), nullable=False)
+    nroSolicitud = db.Column(db.Integer, db.ForeignKey('solicitud.nroSolicitud'), nullable=False)
