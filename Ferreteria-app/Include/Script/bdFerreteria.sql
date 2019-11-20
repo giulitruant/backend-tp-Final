@@ -57,7 +57,6 @@ CREATE  TABLE IF NOT EXISTS `bdferreteria`.`factura` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Table `bdferreteria`.`proveedor`
 -- -----------------------------------------------------
@@ -71,7 +70,6 @@ CREATE  TABLE IF NOT EXISTS `bdferreteria`.`proveedor` (
   PRIMARY KEY (`cuit`) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Table `bdferreteria`.`producto`
@@ -91,7 +89,6 @@ CREATE  TABLE IF NOT EXISTS `bdferreteria`.`producto` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Table `bdferreteria`.`solicitud_detalle`

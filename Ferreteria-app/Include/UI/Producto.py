@@ -63,7 +63,7 @@ class UIProducto():
 
     def deleteProducto(self, id_prod):
         try:
-            p =  Producto.query.filter_by(id_prod=id_prod).first()
+            p =  Producto.query.filter_by(idProd=id_prod).first()
             if not p is None:
                 db.session.delete(p)
                 db.session.commit()
@@ -76,7 +76,7 @@ class UIProducto():
 
     def updateProducto(self, id, desc, precio_u, stock, cant_m, prov):
         try:
-            p = Producto.query.filter_by(id_prod=id).first()
+            p = Producto.query.filter_by(idProd=id).first()
             if not p is None:
                 p.descripcion = str(desc)
                 p.precio_uni = float(precio_u)
@@ -84,7 +84,7 @@ class UIProducto():
                 p.cant_min = int(cant_m)
                 p.cuit = str(prov)
                 db.session.commit()
-                p = Producto.query.filter_by(id_prod=id).first()
+                p = Producto.query.filter_by(idProd=id).first()
                 if not p is None:
                     return p
                 else:
@@ -97,7 +97,7 @@ class UIProducto():
 
     def buscarProducto(self,id):
         try:
-            p = Producto.query.filter_by(id_prod = id).first()
+            p = Producto.query.filter_by(idProd = id).first()
             if p:
                 return p
             else:

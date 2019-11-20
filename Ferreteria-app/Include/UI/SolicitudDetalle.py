@@ -8,7 +8,7 @@ class UISolicitudDetalle():
     def Alta(self,nro_sol,cant,prod):
         try:
             if self.validaSolicitud():
-                SolDet = SolicitudDetalle(nro_solicitud = nro_sol , cantidad = cant , id_prod = prod)
+                SolDet = SolicitudDetalle(nroSolicitud = nro_sol , cantidad = cant , id_prod = prod)
                 db.session.add(SolDet)
                 db.session.commit()
                 return SolDet
@@ -54,7 +54,7 @@ class UISolicitudDetalle():
                 return 'Nro solicitud invalida'
         
         except TypeError as e:
-            print('Error:'+ e)
+            print('Error:' + e)
             return 'Error de servicio'
                 
 

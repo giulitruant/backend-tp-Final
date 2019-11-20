@@ -1,12 +1,12 @@
 from Include.Model.model import Factura, Solicitud, Producto, SolicitudDetalle
 from Include.UI.Proveedor import UIProveedor
-from Include.UI.Solicitud_Detalle import UISolicitudDetalle
+from Include.UI.SolicitudDetalle import UISolicitudDetalle
 from Include.UI.Cliente import UICliente
 from Include.Model.model import db
 
 class UIFactura():
 
-    def alta(self, nroSolicitud, formaPago, cuenta, nomTarjeta, nro_tarjeta, cant_cuotas):
+    def alta(self, nroSolicitud, formaPago, cuenta, nomTarjeta, nro_tarjeta, cant_cuotas, tipo):
         try:
             facturacion = []
             fact = Factura()
@@ -18,8 +18,6 @@ class UIFactura():
                 return None
             dSol = UISolicitudDetalle()
             lstSolicDet = dSol.getListDetalleSolicitud(nroSolicitud)
-            #nroSolicitud = SolicitudDetalle()
-            #lstSolicDet = SolicitudDetalle.query.filter_by(nroSolicitud=nroSolicitud)
             if lstSolicDet is None:
                 return None
             uiCliente = UICliente()
@@ -29,25 +27,25 @@ class UIFactura():
 
             total=0
             lstProductos = []
+            count = 0
             for value in lstSolicDet:
-                detalle = []
+                detalle = tuple()
+                #idProd = value.idProd
                 cantProd = int(value.cantidad)
-                detalle.insert(cantProd)
 
                 #Actualizo el stock de los productos a comprar
-                prod = Producto.query.filter_by(id_prod=value.id_prod)
+                prod = Producto.query.filter_by(idProd=value.idProd).first()
                 prod.cant_stock = (prod.cant_stock - value.cantidad)
                 db.session.commit()
-                id_Prod = value.id_prod
-                detalle.insert(id_Prod)
 
-                total = total + (cantProd * prod.precio_uni)
-                detalle.insert(cantProd * prod.precio_uni)
+                totalProducto = (cantProd * prod.precio_uni)
+                total = total + totalProducto
+                detalle = (cantProd, prod.descripcion, prod.idProd, prod.precio_uni, totalProducto)
+                lstProductos.insert(count, detalle)
+                count = count + 1
 
-                # Asigno los detalles de los productos a la lista
-                lstProductos.insert(detalle)
-
-            #asigno el total de la factura
+            #asigno datos de la factura
+            fact.tipo = tipo
             fact.total = total
 
             if formaPago == 'cuotas':
@@ -60,9 +58,9 @@ class UIFactura():
             db.session.add(fact)
             db.session.commit()
 
-            facturacion.insert(fact)
-            facturacion.insert(cliente)
-            facturacion.insert(lstSolicDet)
+            facturacion.insert(0, fact)
+            facturacion.insert(1, cliente)
+            facturacion.insert(2, lstProductos)
 
             #retorno los datos para emitir la factura
             return facturacion

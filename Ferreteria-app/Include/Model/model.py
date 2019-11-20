@@ -44,7 +44,7 @@ class SolicitudDetalle(db.Model):
     idProd = db.Column(db.Integer, db.ForeignKey('producto.idProd'), nullable=False)
 
 class Factura(db.Model):
-    id_factura = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    idFactura = db.Column(db.Integer, primary_key=True, autoincrement=True)
     total = db.Column(db.Float, nullable=False)
     tipo = db.Column(db.String(10), nullable=False)
     forma_pago = db.Column(db.String(40), nullable=False)

@@ -3,7 +3,7 @@ from Include.UI.Proveedor import UIProveedor
 from Include.UI.Cliente import UICliente
 from Include.UI.Factura import UIFactura
 from Include.UI.Solicitud import UISolicitud
-from Include.UI.Solicitud_Detalle import UISolicitudDetalle
+from Include.UI.SolicitudDetalle import UISolicitudDetalle
 from datetime import date
 
 from flask import Flask, request, jsonify
@@ -49,7 +49,7 @@ def ObtenerProductosPorProveedor():
             np = UIProducto()
             lista = np.getProductos(prov)
             response = jsonify({
-                "producto": [{"id": x.id_prod,
+                "producto": [{"id": x.idProd,
                               "descripcion": x.descripcion,
                               "precioUnitario" : x.precio_uni,
                               "stock" : x.cant_stock,
@@ -88,7 +88,7 @@ def ObtenerProductos():
         np = UIProducto()
         lista = np.getProductos()
         response = jsonify({
-            "producto": [{"id": x.id_prod,
+            "producto": [{"id": x.idProd,
                           "descripcion": x.descripcion,
                           "precioU" : x.precio_uni,
                           "stock" : x.cant_stock,
@@ -165,7 +165,7 @@ def ActualizarProducto():
         if not prod is None:
             response = jsonify({
                 'producto': [{
-                "id": prod.id_prod,
+                "id": prod.idProd,
                 "descripcion": prod.descripcion,
                 "precioUnitario": prod.precio_uni,
                 "stock": prod.cant_stock,
@@ -554,6 +554,7 @@ def EmitirFactura():
     try:
         nroSolicitudCompra = request.json['solicitud']
         pago = request.json['tipo_pago']
+        tipoFactura = request.json['tipo']
         nom_tarjeta = ''
         nro_tarjeta = ''
         cuenta = ''
@@ -565,28 +566,32 @@ def EmitirFactura():
             cuotas = request.json['cuotas']
 
         uiFactura = UIFactura()
-        facturacion = uiFactura.alta(nroSolicitudCompra, pago, cuenta, nom_tarjeta, nro_tarjeta, cuotas)
+        facturacion = uiFactura.alta(nroSolicitudCompra, pago, cuenta, nom_tarjeta, nro_tarjeta, cuotas, tipoFactura)
+
         if facturacion is None:
             response = jsonify({
                 'msj':'Error de servicio'
             })
             return response
-
+        fact = facturacion[0]
+        cli = facturacion[1]
+        detSolic = facturacion[2]
         response = jsonify({
-            'nroFactura': facturacion.factura.id,
+            'nroFactura': fact.idFactura,
             'fecha': date.today(),
-            'tipoFactura': facturacion.factura.tipo,
-            'razonSocialCli': facturacion.cliente.nombre + facturacion.cliente.apellido,
-            'domicilioCli': facturacion.cliente.direccion,
-            'telefonoCli': facturacion.cliente.tel,
-            'dni': facturacion.cliente.dni,
-            "producto": [{"cant": x.cantidad,
-                          "Descripcion": x.descripcion,
-                          "codigo": x.id_prod,
-                          "precioU": x.precio_uni,
-                          "importe": x.cant_stock,
-                          } for x in facturacion.detSolic],
-            'importeTotal': facturacion.total
+            'tipoFactura': fact.tipo,
+            'razonSocialCli': cli.nombre + cli.apellido,
+            'domicilioCli': cli.direccion,
+            'telefonoCli': cli.tel,
+            'dni': cli.dni,
+            "producto": [{"codigo": x[2],
+                          "cant": x[0],
+                          "descripcion": x[1],
+                          "precioU": x[3],
+                          "importe": x[4],
+                          } for x in detSolic],
+            'tipoFactura': fact.tipo,
+            'importeTotal': fact.total
         })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
