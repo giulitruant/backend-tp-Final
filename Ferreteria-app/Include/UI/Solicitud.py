@@ -5,13 +5,13 @@ from sqlalchemy import exc
 
 
 class UISolicitud():
-    def Alta(self,dni,precio,fecha):
+    def Alta(self,dni,total, fecha):
         try:
-            if not dni is None and not precio is None and not fecha is None:
+            if not dni is None and not fecha is None:
                 c = UICliente()
                 existecli= c.BuscarCliente(dni)
                 if existecli:
-                            sol = Solicitud(dni_cliente = dni , precio_total = precio , fecha_solicitud = fecha)
+                            sol = Solicitud(dniCliente = dni ,precio_total = total, fecha_solicitud = fecha)
                             db.session.add(sol)
                             db.session.commit()
                             return sol
@@ -22,12 +22,22 @@ class UISolicitud():
     
     def buscarSolicitud(self, id_sol):
         try:
-            sol = Solicitud.query.filter_by(nro_solicitud=id_sol).first()
+            sol = Solicitud.query.filter_by(nroSolicitud=id_sol).first()
             if sol:
                 return sol
             else:
                 return None
         except TypeError as ex:
             return 'Error al buscar la solicitud'
-    
-    
+
+    def getSolicitud(self, nroSolic):
+        try:
+            p = Solicitud.query.filter_by(nroSolicitud = nroSolic).first()
+            if p is None:
+                return 'No se encontro el nro de solicitud'
+            else:
+                return p
+        except TypeError as e:
+            print(e.args)
+            return('Error de servicio')
+

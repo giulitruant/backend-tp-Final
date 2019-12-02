@@ -494,20 +494,32 @@ def ObtenerClientes():
 @app.route('/addSolicitud' , methods=['POST'])
 def addSolicitud():
     try:
-        dni = request.args['dni_cliente']
-        precio = request.args['precio_total']
-        fecha_sol = request.args['fecha_solicitud']
+        dni = request.json['cliente']
+        #precio = request.args['precio_total']
+        fecha_sol = date.today()
         #Agregar fecha_vto_solicitud
-        sol_details = request.args['solicitud']
+        sol_details = request.json['productos']
         s = UISolicitud()
-        sol = s.Alta(dni = dni, precio = precio,fecha = fecha_sol)
-        if sol:
-            for det in sol_details:
-                sd = UISolicitudDetalle()
-                nuevo_detalle = sd.Alta(sol.nro_solicitud,det.cantidad,det.prod)
-        response = jsonify({
-            'msj': 'ok'
-        })
+        p = UIProducto()
+
+        total = 0
+        for valor in sol_details[0]:
+            prod = p.buscarProducto(valor['id'])
+            total += prod.precio_uni
+
+        sol = s.Alta(dni=dni, total = total, fecha=fecha_sol)
+        sd = UISolicitudDetalle()
+        #for det in sol_details[0]:
+        nuevo_detalle = sd.Alta(sol.nroSolicitud, sol_details[0])
+        if(not nuevo_detalle is None):
+            response = jsonify({
+                'msj': 'ok'
+            })
+        else:
+            response = jsonify({
+                'msj': 'Error'
+            })
+
     except Exception as ex:
         response = jsonify({
             'msj': 'Error de servicio'
@@ -525,13 +537,18 @@ def getSolicitud():
             #si encuentro el objeto busco los detalles de la solicitud
             det = UISolicitudDetalle()
             #ahora genero la lista a devolver con el detalle de las solicitudes
+            soli = sol.getSolicitud(nro_sol)
+            if soli is None:
+                 response = jsonify({
+                    'msj':'No existe dicha solicitud'
+                })
             listDet = det.getListDetalleSolicitud(obj.nro_solicutd)
-            if listDet:
+            if not listDet is None:
                 response = jsonify({
-                    'nro_solicitud' : obj.nro_solicitud,
+                    'nro_solicitud': obj.nro_solicitud,
                     'dni_cliente': obj.dni_cliente,
-                    'fecha_solicitud':obj.fecha_solicitud,
-                    'sol_det':listDet
+                    'fecha_solicitud': obj.fecha_solicitud,
+                    'sol_det': listDet
 
                 })
             else:
@@ -570,7 +587,7 @@ def EmitirFactura():
 
         if facturacion is None:
             response = jsonify({
-                'msj':'Error de servicio'
+                'msj': 'Error de servicio'
             })
             return response
         fact = facturacion[0]

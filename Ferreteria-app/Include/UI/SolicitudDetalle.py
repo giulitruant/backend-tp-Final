@@ -2,24 +2,32 @@ from Include.Model.model import SolicitudDetalle
 from Include.Model.model import db
 from Include.UI.Solicitud import UISolicitud
 from Include.UI.Producto import UIProducto
-from sqlalchemy import exc
+from sqlalchemy import exc, func
 
 class UISolicitudDetalle(): 
-    def Alta(self,nro_sol,cant,prod):
+    def Alta(self,nro_sol, detalles):
         try:
-            if self.validaSolicitud():
-                SolDet = SolicitudDetalle(nroSolicitud = nro_sol , cantidad = cant , id_prod = prod)
-                db.session.add(SolDet)
-                db.session.commit()
-                return SolDet
-            else:
-                return None
+            for x in detalles:
+                if self.validaSolicitud(nro_sol, 1, x['id']):
+                    SolDet = SolicitudDetalle(nroSolicitud = nro_sol , cantidad = 1 , idProd = x['id'])
+                    db.session.add(SolDet)
+                    db.session.commit()
+                else:
+                    return None
+            return SolDet
         except TypeError as ex:
             return 'Error de servicio'
 
     def getListDetalleSolicitud(self, id_sol):
         try:
-            listDet = SolicitudDetalle.query.filter_by(nroSolicitud = id_sol).all()
+            #listDet = SolicitudDetalle.query.filter_by(nroSolicitud = id_sol).all()
+            listDet = SolicitudDetalle.query.with_entities(SolicitudDetalle.idDetalle,
+                                                           SolicitudDetalle.nroSolicitud,
+                                                           SolicitudDetalle.idProd,
+                                                           func.count(SolicitudDetalle.idProd))\
+                .filter_by(nroSolicitud = id_sol)\
+                .group_by(SolicitudDetalle.idProd).all()
+
             return listDet
         except exc.SQLAlchemyError as e:
             print(e.args)
@@ -35,7 +43,7 @@ class UISolicitudDetalle():
                     p = UIProducto()
                     pr = p.buscarProducto(prod)
                     if not p is None:
-                        if cant > pr.cant_stock:
+                        if cant < pr.cant_stock:
                             return True
         except Exception as ex:
             print(ex)
@@ -56,6 +64,3 @@ class UISolicitudDetalle():
         except TypeError as e:
             print('Error:' + e)
             return 'Error de servicio'
-                
-
-
